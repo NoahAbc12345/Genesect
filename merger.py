@@ -1,4 +1,4 @@
-import os, tkinter
+import os, time, tkinter
 from tkinter import Tk, ttk, filedialog, messagebox
 filePart1 = ""; filePart2 = ""
 mainWindow = Tk()
@@ -26,18 +26,27 @@ def fileSelect2():
 def fileMergeData():
     fileProduct = filedialog.asksaveasfilename(title = "Save Merged ISO Parts", filetypes = (("Disc Image File","*.iso"),))
     if not fileProduct.endswith(".iso"): fileProduct = fileProduct + ".iso"
-    mergeButton.config(text = "Merging... Please wait for completion.", state = "disabled")
+    mergeButton.config(text = "Merge in Progress", state = "disabled")
+    mergeTotal = os.stat(file1Path.get()).st_size + os.stat(file2Path.get()).st_size
+    mergeProgress["maximum"] = mergeTotal
     with open(fileProduct, "wb+") as mergeProduct, open(file1Path.get(), "rb") as filePart1, open(file2Path.get(), "rb") as filePart2:
         while True:
             dataPart1 = filePart1.read(1000000)
             if dataPart1 == b"": break
-            else: mergeProduct.write(dataPart1)
+            else:
+                mergeProduct.write(dataPart1)
+                mergeProgress["value"] += 1000000
+                mainWindow.update()
         while True:
             dataPart2 = filePart2.read(1000000)
             if dataPart2 == b"": break
-            else: mergeProduct.write(dataPart2)
+            else:
+                mergeProduct.write(dataPart2)
+                mergeProgress["value"] += 1000000
+                mainWindow.update()
     tkinter.messagebox.showinfo("Genesect","The files have been merged successfully!")
     mergeButton.config(text = "Merge Split ISO Files", state = "normal")
+    mergeProgress["value"] = 0
 
 file1Label = tkinter.Label(mainWindow, text = "ISO File Part 1")
 file1Label.grid(row = 1)
@@ -60,11 +69,14 @@ pickFile2.config(height = 1, width = 35); pickFile2.grid(row = 6)
 buttonSeparator = tkinter.ttk.Separator(mainWindow, orient = "horizontal")
 buttonSeparator.grid(row=7, sticky = "ew", pady = 10)
 
+mergeProgress = tkinter.ttk.Progressbar(mainWindow, orient = "horizontal")
+mergeProgress.config(length = 260); mergeProgress.grid(row = 8)
+
 mergeButton = tkinter.Button(mainWindow, text = "Merge Split ISO Files", border = 5, command = fileMergeData)
-mergeButton.config(height = 2, width = 35); mergeButton.grid(row = 8)
+mergeButton.config(height = 2, width = 35); mergeButton.grid(row = 9, pady = 10)
 buttonCheck()
 
-creditLabel = tkinter.Label(mainWindow, text = "Created by: NoahAbc12345", width = 40)
-creditLabel.grid(row = 9, pady = 5)
+creditLabel = tkinter.Label(mainWindow, text = "Created by NoahAbc12345", width = 40)
+creditLabel.grid(row = 10)
 
 mainWindow.mainloop()
