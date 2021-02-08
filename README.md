@@ -5,4 +5,4 @@ Genesect is a simple tool which can be used to combine two split image disc file
 
 This tool was only made as a quick project to be done in a few days, so it is flawed in some aspects. Later on, I do plan on improving the application's speed and possibly allowing more than two files to be combined together in one go. Genesect is written in Python, and uses the Tkinter package.
 
-This tool has been tested and can be used on both Windows and Linux operating systems. Executable files for each operating system have been provided for general use.
+This tool has been tested and can be used on Windows operating systems. An executable file has been provided for general use.
